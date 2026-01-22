@@ -3,270 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quote Studio Pro | Viral Quote Generator</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Telugu:wght@400;700;900&family=Montserrat:wght@400;700;900&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-
+    <title>Telugu News & Quotes Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Noto+Serif+Telugu:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #8b5cf6; --bg-app: #0f172a; --panel: #1e293b; --text-dim: #94a3b8; }
+        :root { --primary: #e11d48; --bg: #020617; --card: #1e293b; }
+        body { font-family: 'Poppins', sans-serif; background: var(--bg); color: white; margin: 0; }
         
-        * { box-sizing: border-box; } /* Prevents horizontal spread */
+        /* Navigation */
+        nav { background: #0f172a; padding: 15px 5%; display: flex; justify-content: space-between; border-bottom: 1px solid #1e293b; }
+        .logo { font-weight: 800; color: var(--primary); text-decoration: none; font-size: 20px; }
+        .nav-links a { color: #94a3b8; text-decoration: none; margin-left: 15px; font-size: 14px; }
 
-        body { 
-            font-family: 'Poppins', sans-serif; 
-            background: var(--bg-app); 
-            color: white; 
-            display: flex; 
-            height: 100vh; 
-            margin: 0; 
-            overflow: hidden; 
-        }
+        /* Ticker */
+        .ticker-bar { background: var(--primary); color: white; padding: 8px 0; overflow: hidden; white-space: nowrap; font-size: 14px; font-weight: bold; }
+        .ticker-text { display: inline-block; animation: scroll 25s linear infinite; }
+        @keyframes scroll { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-        /* --- SIDEBAR UI --- */
-        .sidebar { 
-            width: 380px; 
-            flex-shrink: 0; /* Keeps sidebar fixed width */
-            background: var(--panel); 
-            border-right: 1px solid #334155; 
-            display: flex; 
-            flex-direction: column; 
-            overflow-y: auto;
-            z-index: 20;
-        }
+        /* Layout */
+        .main-container { display: grid; grid-template-columns: 1fr 350px; gap: 20px; padding: 20px 5%; max-width: 1300px; margin: 0 auto; }
 
-        .sidebar-header { padding: 25px; border-bottom: 1px solid #334155; text-align: center; }
-        .sidebar-header h2 { margin: 0; color: var(--primary); font-size: 18px; letter-spacing: 3px; }
-        .sidebar-header p { margin: 5px 0 0 0; font-size: 10px; color: var(--text-dim); letter-spacing: 1px; }
+        /* News Cards */
+        .news-grid { display: flex; flex-direction: column; gap: 20px; }
+        .news-card { background: var(--card); border-radius: 15px; overflow: hidden; border: 1px solid #334155; transition: 0.3s; }
+        .news-card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .news-img { width: 100%; height: 200px; object-fit: cover; background: #0f172a; }
+        .news-content { padding: 15px; }
+        .news-title { font-family: 'Noto Serif Telugu', serif; font-size: 18px; line-height: 1.5; margin-bottom: 10px; color: #f1f5f9; }
         
-        /* Accordion Logic */
-        .accordion-item { border-bottom: 1px solid #334155; }
-        .accordion-header { 
-            width: 100%; padding: 18px 20px; background: none; border: none; 
-            color: var(--text-dim); text-align: left; font-weight: bold; cursor: pointer; 
-            display: flex; justify-content: space-between; font-size: 12px; text-transform: uppercase;
-        }
-        .accordion-content { padding: 0 20px 20px 20px; display: none; }
-        .accordion-item.active .accordion-content { display: block; }
-        .accordion-item.active .accordion-header { color: var(--primary); }
-
-        /* Controls styling */
-        label { display: block; font-size: 11px; margin-top: 15px; color: #64748b; text-transform: uppercase; font-weight: 600; }
-        textarea, select, input { 
-            width: 100%; background: #0f172a; border: 1px solid #334155; 
-            color: white; padding: 12px; border-radius: 8px; font-size: 14px; margin-top: 6px;
-        }
-        .btn-magic { background: #334155; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 10px; font-weight: 600; }
-
-        /* --- PREVIEW AREA --- */
-        .preview-container { 
-            flex-grow: 1; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            background: #000; 
-            overflow: hidden; 
-            padding: 40px; 
-        }
-
-        #canvas { 
-            position: relative; 
-            display: flex; 
-            justify-content: center; 
-            background-size: cover; 
-            background-position: center; 
-            box-shadow: 0 30px 60px rgba(0,0,0,0.8); 
-            overflow: hidden; 
-            max-width: 100%;
-        }
-
-        #canvas::after { 
-            content: ""; position: absolute; inset: 0; 
-            background: rgba(0,0,0, var(--overlay, 0.4)); z-index: 1; 
-        }
-
-        .short { width: 360px; height: 640px; aspect-ratio: 9/16; }
-        .video { width: 640px; height: 360px; aspect-ratio: 16/9; }
-
-        /* THE TEXT DESIGN */
-        .quote-box { 
-            position: relative; 
-            z-index: 2; 
-            width: 85%; 
-            padding: 30px; 
-            text-align: center;
-        }
-
-        #quoteDisplay {
-            font-weight: 900;
-            line-height: 1.3;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.9), 0 0 10px rgba(0,0,0,0.5);
-        }
-
-        .highlight { color: #facc15; }
-
-        #watermarkDisplay { 
-            position: absolute; bottom: 30px; right: 30px; 
-            z-index: 3; background: rgba(0,0,0,0.5);
-            padding: 6px 15px; border-radius: 50px;
-            font-size: 12px; font-weight: 600; border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .download-area { padding: 20px; border-top: 1px solid #334155; }
-        .download-btn { 
-            background: var(--primary); color: white; border: none; 
-            padding: 18px; width: 100%; 
-            border-radius: 12px; font-weight: bold; cursor: pointer; 
-        }
-
-        /* MOBILE RESPONSIVE LAYOUT */
-        @media (max-width: 900px) {
-            body { flex-direction: column; overflow-y: auto; height: auto; }
-            .sidebar { width: 100%; order: 2; border-right: none; height: auto; }
-            .preview-container { 
-                width: 100%; height: 500px; order: 1; 
-                position: sticky; top: 0; z-index: 10; padding: 20px;
-            }
-            #canvas { transform: scale(0.65); transform-origin: center center; }
+        /* Sidebar Quote */
+        .sidebar-box { background: #111827; border-radius: 15px; padding: 20px; border: 1px solid #334155; position: sticky; top: 20px; }
+        .quote-box { background: linear-gradient(to bottom right, #4f46e5, #9333ea); padding: 20px; border-radius: 12px; text-align: center; }
+        
+        @media (max-width: 850px) {
+            .main-container { grid-template-columns: 1fr; }
+            .sidebar-box { position: static; order: -1; }
         }
     </style>
 </head>
 <body>
 
-<div class="sidebar">
-    <div class="sidebar-header">
-        <h2>QUOTE STUDIO PRO</h2>
-        <p>POWERED BY ANUCREATIONS</p>
+<nav>
+    <a href="index.html" class="logo">QUOTE STUDIO <span style="color:white">NEWS</span></a>
+    <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="aicaptions.html">AI Captions</a>
     </div>
+</nav>
 
-    <div class="accordion-item active">
-        <button class="accordion-header" onclick="toggleAccordion(this)">🎨 Canvas & Background <span>▼</span></button>
-        <div class="accordion-content">
-            <label>Format</label>
-            <select id="platform">
-                <option value="short">YouTube Short (9:16)</option>
-                <option value="video">YouTube Video (16:9)</option>
-            </select>
-            <button class="btn-magic" onclick="randomGradient()">✨ Random Colors</button>
-            <div style="display:flex; gap:10px;">
-                <input type="color" id="bgColor1" value="#6366f1">
-                <input type="color" id="bgColor2" value="#a855f7">
-            </div>
-            <label>Darken Background</label>
-            <input type="range" id="overlayOpacity" min="0" max="0.9" step="0.1" value="0.5">
-            <label>Upload Image</label>
-            <input type="file" id="imageLoader" accept="image/*">
-        </div>
-    </div>
-
-    <div class="accordion-item">
-        <button class="accordion-header" onclick="toggleAccordion(this)">✍️ Text Style <span>▼</span></button>
-        <div class="accordion-content">
-            <label>Quote (*highlight* words)</label>
-            <textarea id="quoteTextIn" rows="4">Success is *not* final, failure is *not* fatal.</textarea>
-            <label>Language</label>
-            <select id="language">
-                <option value="english">English (Montserrat)</option>
-                <option value="telugu">Telugu (Noto Serif)</option>
-            </select>
-            <label>Text Position</label>
-            <select id="textPos">
-                <option value="center">Center</option>
-                <option value="flex-start">Top</option>
-                <option value="flex-end">Bottom</option>
-            </select>
-            <label>Font Size</label>
-            <input type="range" id="fontSize" min="20" max="100" value="40">
-            <label>Text Color</label>
-            <input type="color" id="textColor" value="#ffffff">
-            <label>Watermark</label>
-            <input type="text" id="watermarkIn" placeholder="@yourchannel">
-        </div>
-    </div>
-
-    <div class="download-area">
-        <button class="download-btn" onclick="exportImage()">🚀 DOWNLOAD DESIGN</button>
-        <p style="font-size: 10px; color: #475569; text-align: center; margin-top: 10px;">AnuCreations Tool v2.1</p>
+<div class="ticker-bar">
+    <div class="ticker-text">
+        బ్రేకింగ్ న్యూస్: తెలుగు వార్తలు మరియు కోట్స్ స్టూడియో ప్రారంభం! &nbsp;&nbsp; • &nbsp;&nbsp; 
+        Breaking: Get the latest Telugu news updates and motivational quotes daily.
     </div>
 </div>
 
-<div class="preview-container">
-    <div id="canvas" class="short">
+<div class="main-container">
+    <div class="news-grid">
+        <h2 style="margin-top:0;">తాజా వార్తలు (Latest News)</h2>
+        
+        <div id="rss-feed-container">
+            <script src="https://rss.app/static/widgets/imageboard.js"></script>
+            <ins class="rssapp-widget" data-id="v6TfE7B1R1E7fE7b" data-width="100%" data-height="600"></ins>
+            <p style="font-size:12px; color:#64748b; margin-top:10px;">News powered by V6 Velugu & Sakshi</p>
+        </div>
+    </div>
+
+    <div class="sidebar-box">
         <div class="quote-box">
-            <div id="quoteDisplay"></div>
+            <h4 style="margin:0 0 10px 0; font-size:12px; letter-spacing:1px; opacity:0.8;">DAILY MOTIVATION</h4>
+            <div id="quoteDisplay" style="font-size:16px; font-weight:bold; min-height:80px;">"గెలుపు వైపు నీ ప్రయాణం ఆపకు!"</div>
+            <button onclick="changeQuote()" style="margin-top:15px; padding:8px 15px; border-radius:20px; border:none; cursor:pointer; font-weight:bold;">New Quote ✨</button>
         </div>
-        <div id="watermarkDisplay"></div>
+        
+        <div style="margin-top:20px; padding:15px; background:#1e293b; border-radius:12px;">
+            <h4 style="margin:0 0 10px 0; font-size:14px;">Quick Tools</h4>
+            <ul style="list-style:none; padding:0; font-size:13px;">
+                <li style="margin-bottom:10px;"><a href="aicaptions.html" style="color:var(--primary); text-decoration:none;">🤖 AI Caption Generator</a></li>
+                <li><a href="index.html" style="color:var(--primary); text-decoration:none;">🎨 Poster Maker</a></li>
+            </ul>
+        </div>
     </div>
 </div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
-    function toggleAccordion(btn) { btn.parentElement.classList.toggle('active'); }
+    const teluguQuotes = [
+        "గెలుపు వైపు నీ ప్రయాణం ఆపకు!",
+        "కృషి ఉంటే మనుషులు రుషులవుతారు.",
+        "నేటి నీ శ్రమే రేపటి నీ గెలుపు.",
+        "ఆశయం కోసం అలుపెరగని పోరాటం చెయ్యి.",
+        "నీ ఓటమి నీకు పాఠం కావాలి కానీ అడ్డంకి కాదు."
+    ];
 
-    function randomGradient() {
-        const rc = () => '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
-        document.getElementById('bgColor1').value = rc();
-        document.getElementById('bgColor2').value = rc();
-        updatePreview();
+    function changeQuote() {
+        const q = teluguQuotes[Math.floor(Math.random() * teluguQuotes.length)];
+        document.getElementById('quoteDisplay').innerText = `"${q}"`;
     }
-
-    function updatePreview() {
-        const canvas = document.getElementById('canvas');
-        const quoteOut = document.getElementById('quoteDisplay');
-        const textIn = document.getElementById('quoteTextIn').value;
-
-        if (!document.getElementById('imageLoader').files[0]) {
-            const c1 = document.getElementById('bgColor1').value;
-            const c2 = document.getElementById('bgColor2').value;
-            canvas.style.backgroundImage = `linear-gradient(135deg, ${c1}, ${c2})`;
-        }
-
-        canvas.className = document.getElementById('platform').value;
-        canvas.style.setProperty('--overlay', document.getElementById('overlayOpacity').value);
-        canvas.style.alignItems = document.getElementById('textPos').value;
-
-        quoteOut.innerHTML = textIn.replace(/\*(.*?)\*/g, '<span class="highlight">$1</span>');
-        quoteOut.style.color = document.getElementById('textColor').value;
-
-        const isTe = document.getElementById('language').value === 'telugu';
-        quoteOut.style.fontFamily = isTe ? "'Noto Serif Telugu', serif" : "'Montserrat', sans-serif";
-
-        let size = document.getElementById('fontSize').value;
-        quoteOut.style.fontSize = size + "px";
-        while (quoteOut.scrollHeight > (canvas.offsetHeight * 0.7) && size > 16) {
-            size--;
-            quoteOut.style.fontSize = size + "px";
-        }
-
-        const wm = document.getElementById('watermarkIn').value;
-        document.getElementById('watermarkDisplay').innerText = wm;
-        document.getElementById('watermarkDisplay').style.display = wm ? "block" : "none";
-    }
-
-    document.getElementById('imageLoader').addEventListener('change', function(e) {
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-            document.getElementById('canvas').style.backgroundImage = `url(${ev.target.result})`;
-            updatePreview();
-        };
-        reader.readAsDataURL(e.target.files[0]);
-    });
-
-    const ids = ['bgColor1', 'bgColor2', 'overlayOpacity', 'quoteTextIn', 'language', 'fontSize', 'textColor', 'watermarkIn', 'platform', 'textPos'];
-    ids.forEach(id => document.getElementById(id).addEventListener('input', updatePreview));
-
-    async function exportImage() {
-        const btn = document.querySelector('.download-btn');
-        btn.innerText = "💾 SAVING...";
-        const result = await html2canvas(document.getElementById('canvas'), { scale: 3, useCORS: true });
-        const link = document.createElement('a');
-        link.download = `QuoteStudioPro_${Date.now()}.png`;
-        link.href = result.toDataURL();
-        link.click();
-        btn.innerText = "🚀 DOWNLOAD DESIGN";
-    }
-
-    updatePreview();
 </script>
 
 </body>
