@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quote Studio Pro | AnuCreations</title>
+    <title>Quote Studio Pro | Viral Quote Generator</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Telugu:wght@400;700;900&family=Montserrat:wght@400;700;900&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
@@ -131,8 +131,10 @@
 </head>
 <body>
 
-<div class="sidebar">
-    <div class="sidebar-header"><h2>ANU CREATIONS</h2></div>
+<div class="sidebar-header">
+    <h2>QUOTE STUDIO PRO</h2>
+    <p style="font-size: 10px; color: #64748b; margin-top: 5px; letter-spacing: 1px;">POWERED BY ANUCREATIONS</p>
+</div>
 
     <div class="accordion-item active">
         <button class="accordion-header" onclick="toggleAccordion(this)">🎨 Canvas & Background <span>▼</span></button>
@@ -279,7 +281,7 @@
                 backgroundColor: null 
             });
             const link = document.createElement('a');
-            link.download = `AnuCreations_${Date.now()}.png`;
+            link.download = `QuoteStudioPro_${Date.now()}.png`;
             link.href = result.toDataURL("image/png");
             link.click();
         } catch (err) {
