@@ -3,106 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quote Studio Pro 2026</title>
+    <title>Quote Studio Pro | AnuCreations</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Telugu:wght@400;700&family=Montserrat:wght@400;600;900&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Telugu:wght@400;700;900&family=Montserrat:wght@400;700;900&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
     <style>
         :root { --primary: #8b5cf6; --bg-app: #0f172a; --panel: #1e293b; }
-        body { font-family: 'Poppins', sans-serif; background: var(--bg-app); color: white; display: flex; height: 100vh; margin: 0; overflow: hidden; }
-
-        /* Sidebar & Accordion */
-        .sidebar { width: 400px; background: var(--panel); border-right: 1px solid #334155; display: flex; flex-direction: column; }
-        .sidebar-header { padding: 20px; border-bottom: 1px solid #334155; }
-        .sidebar-header h2 { margin: 0; color: var(--primary); font-size: 18px; text-transform: uppercase; letter-spacing: 2px; }
         
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: var(--bg-app); 
+            color: white; 
+            display: flex; 
+            height: 100vh; 
+            margin: 0; 
+            overflow: hidden; 
+        }
+
+        /* SIDEBAR NAVIGATION */
+        .sidebar { 
+            width: 380px; 
+            background: var(--panel); 
+            border-right: 1px solid #334155; 
+            display: flex; 
+            flex-direction: column; 
+            z-index: 20;
+        }
+
+        .sidebar-header { padding: 20px; border-bottom: 1px solid #334155; }
+        .sidebar-header h2 { margin: 0; color: var(--primary); font-size: 16px; text-transform: uppercase; letter-spacing: 2px; }
+        
+        /* ACCORDION MENU */
         .accordion-item { border-bottom: 1px solid #334155; }
-        .accordion-header { width: 100%; padding: 15px 20px; background: none; border: none; color: #94a3b8; text-align: left; font-weight: bold; font-size: 12px; text-transform: uppercase; cursor: pointer; display: flex; justify-content: space-between; }
-        .accordion-header:hover { background: rgba(255,255,255,0.05); color: white; }
+        .accordion-header { 
+            width: 100%; padding: 15px 20px; background: none; border: none; 
+            color: #94a3b8; text-align: left; font-weight: bold; cursor: pointer; 
+            display: flex; justify-content: space-between; 
+        }
         .accordion-content { padding: 0 20px 20px 20px; display: none; }
         .accordion-item.active .accordion-content { display: block; }
-        .accordion-item.active .accordion-header { color: var(--primary); }
 
-        /* Controls */
-        label { display: block; font-size: 11px; margin-bottom: 5px; color: #64748b; margin-top: 10px; }
-        textarea, select, input { width: 100%; background: #0f172a; border: 1px solid #334155; color: white; padding: 10px; border-radius: 6px; font-size: 13px; box-sizing: border-box; }
-        .flex-row { display: flex; gap: 8px; }
-        .btn-magic { background: #334155; color: white; border: none; padding: 8px; border-radius: 6px; cursor: pointer; font-size: 11px; margin-bottom: 10px; width: 100%; }
+        /* CONTROLS */
+        label { display: block; font-size: 11px; margin-top: 15px; color: #64748b; text-transform: uppercase; }
+        textarea, select, input { 
+            width: 100%; background: #0f172a; border: 1px solid #334155; 
+            color: white; padding: 10px; border-radius: 6px; font-size: 13px; margin-top: 5px;
+        }
+        .btn-magic { background: #334155; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 10px; font-weight: 600; }
         .btn-magic:hover { background: var(--primary); }
 
-        /* Preview */
-        .preview-container { flex-grow: 1; display: flex; justify-content: center; align-items: center; background: #000; padding: 20px; }
-        #canvas { position: relative; display: flex; justify-content: center; align-items: center; background-size: cover; background-position: center; box-shadow: 0 20px 50px rgba(0,0,0,0.8); overflow: hidden; }
-        #canvas::after { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, var(--overlay, 0.4)); z-index: 1; }
+        /* PREVIEW AREA */
+        .preview-container { 
+            flex-grow: 1; display: flex; justify-content: center; 
+            align-items: center; background: #000; overflow: auto; padding: 20px; 
+        }
+
+        #canvas { 
+            position: relative; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            background-size: cover; 
+            background-position: center; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
+            overflow: hidden; 
+        }
+
+        /* Overlay to darken background */
+        #canvas::after { 
+            content: ""; position: absolute; inset: 0; 
+            background: rgba(0,0,0, var(--overlay, 0.4)); z-index: 1; 
+        }
+
+        /* Canvas Sizes */
         .short { width: 360px; height: 640px; }
         .video { width: 640px; height: 360px; }
-        .quote-box { position: relative; z-index: 2; width: 85%; padding: 25px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.1); word-wrap: break-word; }
-        #watermarkDisplay { position: absolute; bottom: 20px; right: 20px; z-index: 3; font-size: 14px; opacity: 0.5; }
-        
-        .download-btn { background: var(--primary); color: white; border: none; padding: 15px; width: calc(100% - 40px); margin: 20px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+        /* THE QUOTE TEXT (NO BOX) */
+        .quote-box { 
+            position: relative; 
+            z-index: 2; 
+            width: 90%; 
+            padding: 20px; 
+            background: none; /* No Box Background */
+            border: none;
+            word-wrap: break-word; 
+        }
+
+        #quoteDisplay {
+            font-weight: 900;
+            line-height: 1.2;
+            /* High Readability Stroke & Shadow */
+            -webkit-text-stroke: 1px rgba(0,0,0,0.5);
+            text-shadow: 0 4px 15px rgba(0,0,0,0.8);
+        }
+
+        .highlight { color: #facc15; } /* Yellow highlight for *text* */
+
+        #watermarkDisplay { 
+            position: absolute; bottom: 20px; right: 20px; 
+            z-index: 3; opacity: 0.6; font-size: 14px; font-weight: bold;
+        }
+
+        .download-btn { 
+            background: var(--primary); color: white; border: none; 
+            padding: 18px; width: calc(100% - 40px); margin: 20px; 
+            border-radius: 8px; font-weight: bold; cursor: pointer; 
+            transition: transform 0.2s;
+        }
+        .download-btn:active { transform: scale(0.98); }
+
+        /* MOBILE RESPONSIVE LAYOUT */
+        @media (max-width: 768px) {
+            body { flex-direction: column; overflow-y: auto; height: auto; }
+            .sidebar { width: 100%; order: 2; border-right: none; height: auto; }
+            .preview-container { 
+                width: 100%; height: 550px; order: 1; 
+                position: sticky; top: 0; z-index: 10; 
+            }
+            #canvas { transform: scale(0.8); }
+        }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <div class="sidebar-header"><h2>Quote Studio</h2></div>
+    <div class="sidebar-header"><h2>AnuCreations Studio</h2></div>
 
     <div class="accordion-item active">
-        <button class="accordion-header" onclick="toggleAccordion(this)">Background & Style <span>▼</span></button>
+        <button class="accordion-header" onclick="toggleAccordion(this)">🎨 Visuals <span>▼</span></button>
         <div class="accordion-content">
-            <button class="btn-magic" onclick="randomGradient()">✨ Randomize Colors</button>
-            <div class="flex-row">
-                <div><label>Color 1</label><input type="color" id="bgColor1" value="#4f46e5"></div>
-                <div><label>Color 2</label><input type="color" id="bgColor2" value="#ec4899"></div>
+            <button class="btn-magic" onclick="randomGradient()">✨ Random Colors</button>
+            <div style="display:flex; gap:10px;">
+                <input type="color" id="bgColor1" value="#4f46e5">
+                <input type="color" id="bgColor2" value="#ec4899">
             </div>
-            <label>Overlay Darkness</label>
+            <label>Background Darken</label>
             <input type="range" id="overlayOpacity" min="0" max="0.9" step="0.1" value="0.4">
-            <label>Box Corner Radius</label>
-            <input type="range" id="borderRadius" min="0" max="50" value="15">
-            <label>Box Glow</label>
-            <input type="range" id="boxGlow" min="0" max="100" value="0">
             <label>Custom Image</label>
             <input type="file" id="imageLoader">
         </div>
     </div>
 
     <div class="accordion-item">
-        <button class="accordion-header" onclick="toggleAccordion(this)">Content & Typography <span>▼</span></button>
+        <button class="accordion-header" onclick="toggleAccordion(this)">✍️ Text Style <span>▼</span></button>
         <div class="accordion-content">
-            <label>Quote</label>
-            <textarea id="quoteTextIn" rows="3">Success is not final, failure is not fatal.</textarea>
+            <label>Quote (*highlight* words)</label>
+            <textarea id="quoteTextIn" rows="3">Your only *limit* is your mind.</textarea>
             <label>Language</label>
             <select id="language"><option value="telugu">Telugu</option><option value="english" selected>English</option></select>
-            <div class="flex-row">
-                <div><label>Text Color</label><input type="color" id="textColor" value="#ffffff"></div>
-                <div><label>Alignment</label><select id="textAlign"><option value="center">Center</option><option value="left">Left</option><option value="right">Right</option></select></div>
-            </div>
             <label>Font Size</label>
-            <input type="range" id="fontSize" min="16" max="100" value="32">
-            <label>Line Height</label>
-            <input type="range" id="lineHeight" min="1" max="2.5" step="0.1" value="1.4">
+            <input type="range" id="fontSize" min="20" max="100" value="45">
+            <label>Text Color</label>
+            <input type="color" id="textColor" value="#ffffff">
             <label>Watermark</label>
-            <input type="text" id="watermarkIn" placeholder="@yourchannel">
+            <input type="text" id="watermarkIn" placeholder="@yourname">
         </div>
     </div>
 
     <div class="accordion-item">
-        <button class="accordion-header" onclick="toggleAccordion(this)">Export Settings <span>▼</span></button>
+        <button class="accordion-header" onclick="toggleAccordion(this)">📤 Export <span>▼</span></button>
         <div class="accordion-content">
-            <label>Output Format</label>
+            <label>Format</label>
             <select id="platform">
-                <option value="short">YouTube Short (9:16)</option>
-                <option value="video">YouTube Video (16:9)</option>
+                <option value="short">9:16 Short (Mobile)</option>
+                <option value="video">16:9 Video (YouTube)</option>
             </select>
         </div>
     </div>
 
-    <button class="download-btn" onclick="exportImage()">DOWNLOAD HIGH-RES</button>
+    <button class="download-btn" onclick="exportImage()">DOWNLOAD DESIGN</button>
 </div>
 
 <div class="preview-container">
     <div id="canvas" class="short">
-        <div class="quote-box" id="quoteBox">
+        <div class="quote-box">
             <div id="quoteDisplay"></div>
         </div>
         <div id="watermarkDisplay"></div>
@@ -117,51 +192,51 @@
     }
 
     function randomGradient() {
-        const chars = '0123456789ABCDEF';
-        const rc = () => '#' + Array.from({length: 6}, () => chars[Math.floor(Math.random() * 16)]).join('');
+        const rc = () => '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
         document.getElementById('bgColor1').value = rc();
         document.getElementById('bgColor2').value = rc();
         updatePreview();
     }
 
     function updatePreview() {
-        const c1 = document.getElementById('bgColor1').value;
-        const c2 = document.getElementById('bgColor2').value;
         const canvas = document.getElementById('canvas');
+        const quoteOut = document.getElementById('quoteDisplay');
+        const textIn = document.getElementById('quoteTextIn').value;
+
+        // Apply Gradient if no image is uploaded
         if (!document.getElementById('imageLoader').files[0]) {
+            const c1 = document.getElementById('bgColor1').value;
+            const c2 = document.getElementById('bgColor2').value;
             canvas.style.backgroundImage = `linear-gradient(135deg, ${c1}, ${c2})`;
         }
 
-        const quoteOut = document.getElementById('quoteDisplay');
-        const quoteBox = document.getElementById('quoteBox');
-        
-        quoteOut.innerText = document.getElementById('quoteTextIn').value;
-        document.getElementById('watermarkDisplay').innerText = document.getElementById('watermarkIn').value;
-        
-        canvas.className = document.getElementById('platform').value;
+        // Apply Dark Overlay
         canvas.style.setProperty('--overlay', document.getElementById('overlayOpacity').value);
         
-        // Typography
-        const isTelugu = document.getElementById('language').value === 'telugu';
-        quoteOut.style.fontFamily = isTelugu ? "'Noto Serif Telugu', serif" : "'Montserrat', sans-serif";
+        // Canvas Size
+        canvas.className = document.getElementById('platform').value;
+
+        // Process Highlights (*word*)
+        quoteOut.innerHTML = textIn.replace(/\*(.*?)\*/g, '<span class="highlight">$1</span>');
+
+        // Typography Settings
+        const isTe = document.getElementById('language').value === 'telugu';
+        quoteOut.style.fontFamily = isTe ? "'Noto Serif Telugu', serif" : "'Montserrat', sans-serif";
         quoteOut.style.color = document.getElementById('textColor').value;
-        quoteOut.style.textAlign = document.getElementById('textAlign').value;
-        quoteOut.style.lineHeight = document.getElementById('lineHeight').value;
-
-        // Box Style
-        const glow = document.getElementById('boxGlow').value;
-        quoteBox.style.borderRadius = document.getElementById('borderRadius').value + "px";
-        quoteBox.style.boxShadow = `0 10px 30px rgba(0,0,0,0.3), 0 0 ${glow}px ${c1}88`;
-
-        // Scaling
+        
+        // Auto-scaling font size
         let size = document.getElementById('fontSize').value;
         quoteOut.style.fontSize = size + "px";
-        while (quoteOut.scrollHeight > (canvas.offsetHeight * 0.7) && size > 12) {
+        while (quoteOut.scrollHeight > (canvas.offsetHeight * 0.7) && size > 15) {
             size--;
             quoteOut.style.fontSize = size + "px";
         }
+
+        // Watermark
+        document.getElementById('watermarkDisplay').innerText = document.getElementById('watermarkIn').value;
     }
 
+    // Image Upload Logic
     document.getElementById('imageLoader').addEventListener('change', function(e) {
         const reader = new FileReader();
         reader.onload = (ev) => {
@@ -171,18 +246,23 @@
         reader.readAsDataURL(e.target.files[0]);
     });
 
-    const inputs = ['bgColor1', 'bgColor2', 'overlayOpacity', 'borderRadius', 'boxGlow', 'quoteTextIn', 'language', 'textColor', 'textAlign', 'fontSize', 'lineHeight', 'watermarkIn', 'platform'];
-    inputs.forEach(id => document.getElementById(id).addEventListener('input', updatePreview));
+    // Auto-update on every change
+    const controls = ['bgColor1', 'bgColor2', 'overlayOpacity', 'quoteTextIn', 'language', 'fontSize', 'textColor', 'watermarkIn', 'platform'];
+    controls.forEach(id => document.getElementById(id).addEventListener('input', updatePreview));
 
     async function exportImage() {
+        const btn = document.querySelector('.download-btn');
+        btn.innerText = "Generating...";
         const canvasEl = document.getElementById('canvas');
-        const finalCanvas = await html2canvas(canvasEl, { scale: 3, useCORS: true });
+        const finalImg = await html2canvas(canvasEl, { scale: 3, useCORS: true });
         const link = document.createElement('a');
-        link.download = `Quote-${Date.now()}.png`;
-        link.href = finalCanvas.toDataURL();
+        link.download = `AnuCreations_${Date.now()}.png`;
+        link.href = finalImg.toDataURL();
         link.click();
+        btn.innerText = "DOWNLOAD DESIGN";
     }
 
+    // Initial Run
     updatePreview();
 </script>
 
