@@ -3,51 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Caption Generator | Quote Studio Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>AI Caption Studio | Quote Studio Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Noto+Serif+Telugu:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #8b5cf6; --bg: #0f172a; --card: #1e293b; }
-        body { font-family: 'Poppins', sans-serif; background: var(--bg); color: white; margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .container { max-width: 500px; width: 100%; text-align: center; }
-        h1 { color: var(--primary); font-size: 24px; margin-bottom: 5px; }
+        :root { --primary: #8b5cf6; --bg: #0f172a; --card: #1e293b; --accent: #facc15; }
+        
+        body { font-family: 'Poppins', sans-serif; background: var(--bg); color: white; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        
+        /* Navigation */
+        nav { width: 100%; background: #1e293b; padding: 15px; text-align: center; border-bottom: 1px solid #334155; margin-bottom: 30px; }
+        nav a { color: white; margin: 0 15px; text-decoration: none; font-size: 13px; font-weight: bold; opacity: 0.7; transition: 0.3s; }
+        nav a:hover { opacity: 1; color: var(--primary); }
+        nav a.active { opacity: 1; border-bottom: 2px solid var(--primary); padding-bottom: 5px; }
+
+        .container { max-width: 500px; width: 90%; text-align: center; padding-bottom: 50px; }
+        h1 { color: var(--primary); font-size: 28px; margin: 0; letter-spacing: -1px; }
         p.subtitle { color: #94a3b8; font-size: 14px; margin-bottom: 30px; }
         
-        .upload-card { background: var(--card); border: 2px dashed #334155; padding: 40px 20px; border-radius: 15px; cursor: pointer; transition: 0.3s; }
-        .upload-card:hover { border-color: var(--primary); background: #26334d; }
-        #preview { width: 100%; border-radius: 10px; margin-top: 20px; display: none; }
+        /* Upload Area */
+        .upload-section { background: var(--card); border: 2px dashed #334155; padding: 40px 20px; border-radius: 20px; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
+        .upload-section:hover { border-color: var(--primary); background: #26334d; }
+        #preview { width: 100%; border-radius: 12px; display: none; margin-top: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
         
-        button { 
-            background: var(--primary); color: white; border: none; width: 100%; 
-            padding: 15px; border-radius: 10px; font-weight: bold; font-size: 16px; 
-            margin-top: 20px; cursor: pointer; transition: 0.2s;
-        }
-        button:disabled { background: #475569; cursor: not-allowed; }
+        /* Buttons */
+        .btn-main { background: var(--primary); color: white; border: none; width: 100%; padding: 18px; border-radius: 12px; font-weight: 800; font-size: 16px; margin-top: 25px; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3); }
+        .btn-main:hover { transform: translateY(-2px); filter: brightness(1.1); }
+        .btn-main:disabled { background: #475569; transform: none; cursor: not-allowed; }
         
-        .result-area { margin-top: 30px; text-align: left; display: none; }
-        .caption-box { background: #0f172a; border: 1px solid #334155; padding: 15px; border-radius: 8px; margin-bottom: 15px; position: relative; }
-        .copy-btn { position: absolute; right: 10px; top: 10px; background: #334155; font-size: 10px; padding: 5px 10px; width: auto; margin: 0; }
+        /* Results Area */
+        .result-area { margin-top: 40px; text-align: left; display: none; width: 100%; }
+        .caption-card { background: var(--card); border: 1px solid #334155; padding: 20px; border-radius: 15px; margin-bottom: 20px; position: relative; animation: slideUp 0.5s ease; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
-        .loading { display: none; margin-top: 20px; color: var(--primary); font-weight: bold; }
+        .copy-btn { position: absolute; right: 15px; top: 15px; background: #334155; color: #fff; border: none; font-size: 10px; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .copy-btn:hover { background: var(--primary); }
+        
+        .telugu-text { font-family: 'Noto Serif Telugu', serif; color: var(--accent); margin-top: 10px; line-height: 1.6; font-size: 17px; }
+        .english-text { color: #e2e8f0; line-height: 1.5; font-size: 15px; }
+        .hashtags { color: #6366f1; margin-top: 10px; font-size: 13px; font-weight: 600; }
+
+        .loader { display: none; margin-top: 25px; }
+        .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 10px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
         input[type="file"] { display: none; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>AI Caption Generator</h1>
-    <p class="subtitle">Upload a photo and let AI write your Instagram captions in Telugu & English.</p>
+<nav>
+    <a href="index.html">🎨 QUOTE MAKER</a>
+    <a href="captions.html" class="active">🤖 AI CAPTIONS</a>
+</nav>
 
-    <label for="imageInput" class="upload-card" id="dropZone">
-        <span id="uploadText">Click to Upload Photo</span>
+<div class="container">
+    <h1>AI Caption Studio</h1>
+    <p class="subtitle">Get viral Telugu & English captions for your photos</p>
+
+    <label for="imageInput" class="upload-section" id="dropZone">
+        <div id="uploadPlaceholder">
+            <div style="font-size: 40px; margin-bottom: 10px;">📸</div>
+            <span style="font-weight: 600;">Tap to upload your photo</span>
+            <p style="font-size: 12px; color: #64748b; margin-top: 5px;">Supports JPG, PNG</p>
+        </div>
         <img id="preview" src="#" alt="Preview">
     </label>
     <input type="file" id="imageInput" accept="image/*">
 
-    <button id="generateBtn" disabled>GENERATE CAPTIONS ✨</button>
-    <div class="loading" id="loader">AI is thinking... 🧠</div>
+    <button id="generateBtn" class="btn-main" disabled>GENERATE AI CAPTIONS ✨</button>
+    
+    <div class="loader" id="loader">
+        <div class="spinner"></div>
+        <p style="font-size: 14px; color: var(--primary);">AI is analyzing your photo...</p>
+    </div>
 
     <div class="result-area" id="resultArea">
-        <h3 style="color: var(--primary);">Generated Captions:</h3>
+        <h3 style="color: var(--primary); font-size: 18px; margin-bottom: 15px;">Suggested Captions:</h3>
         <div id="captionsList"></div>
     </div>
 </div>
@@ -55,22 +86,23 @@
 <script>
     const imageInput = document.getElementById('imageInput');
     const preview = document.getElementById('preview');
-    const uploadText = document.getElementById('uploadText');
+    const uploadPlaceholder = document.getElementById('uploadPlaceholder');
     const generateBtn = document.getElementById('generateBtn');
     const loader = document.getElementById('loader');
     const resultArea = document.getElementById('resultArea');
     const captionsList = document.getElementById('captionsList');
 
-    // Paste your Gemini API Key here
-    const API_KEY = "AIzaSyAD-pmkI8LzqAdHCF2w_ouHAtvPoaH4uCI";
+    // --- PASTE YOUR API KEY HERE ---
+    const API_KEY = "PASTE_YOUR_AIza_KEY_HERE"; 
 
-    imageInput.onchange = evt => {
+    imageInput.onchange = () => {
         const [file] = imageInput.files;
         if (file) {
             preview.src = URL.createObjectURL(file);
             preview.style.display = 'block';
-            uploadText.style.display = 'none';
+            uploadPlaceholder.style.display = 'none';
             generateBtn.disabled = false;
+            resultArea.style.display = 'none';
         }
     }
 
@@ -93,7 +125,7 @@
                 body: JSON.stringify({
                     contents: [{
                         parts: [
-                            { text: "Analyze this image and provide 3 viral Instagram captions. For each caption, provide an English version and a Telugu version. Include relevant hashtags." },
+                            { text: "Act as a social media expert. Analyze this image and write 3 distinct captions. For each caption, give me: 1. A viral English version. 2. A matching Telugu version. 3. 5 relevant hashtags. Keep the tone engaging." },
                             { inline_data: { mime_type: "image/jpeg", data: pureBase64 } }
                         ]
                     }]
@@ -101,12 +133,16 @@
             });
 
             const data = await response.json();
-            const text = data.candidates[0].content.parts[0].text;
             
-            // Display results
-            displayCaptions(text);
+            if (data.error) {
+                throw new Error(data.error.message);
+            }
+
+            const rawText = data.candidates[0].content.parts[0].text;
+            processAndDisplay(rawText);
+
         } catch (error) {
-            alert("Error: Make sure your API key is correct!");
+            alert("AI Error: " + error.message);
             console.error(error);
         } finally {
             loader.style.display = 'none';
@@ -114,27 +150,37 @@
         }
     };
 
-    function displayCaptions(text) {
+    function processAndDisplay(text) {
         resultArea.style.display = 'block';
-        const formattedText = text.split('\n\n'); // Simple split by double newline
         
-        formattedText.forEach(cap => {
-            if(cap.trim().length < 5) return;
-            const div = document.createElement('div');
-            div.className = 'caption-box';
-            div.innerHTML = `
-                <button class="copy-btn" onclick="copyText(this)">COPY</button>
-                <div class="text-content">${cap.replace(/\n/g, '<br>')}</div>
+        // Splitting logic: Gemini usually returns numbered lists or blocks
+        const sections = text.split(/\d\./).filter(s => s.trim().length > 10);
+        
+        sections.forEach(section => {
+            const card = document.createElement('div');
+            card.className = 'caption-card';
+            
+            // Basic formatting to separate lines
+            const formattedText = section.replace(/\n/g, '<br>');
+            
+            card.innerHTML = `
+                <button class="copy-btn" onclick="copyCaption(this)">COPY ALL</button>
+                <div class="english-text">${formattedText}</div>
             `;
-            captionsList.appendChild(div);
+            captionsList.appendChild(card);
         });
     }
 
-    function copyText(btn) {
+    function copyCaption(btn) {
         const text = btn.nextElementSibling.innerText;
         navigator.clipboard.writeText(text);
-        btn.innerText = "COPIED!";
-        setTimeout(() => btn.innerText = "COPY", 2000);
+        const originalText = btn.innerText;
+        btn.innerText = "COPIED! ✅";
+        btn.style.background = "#22c55e";
+        setTimeout(() => {
+            btn.innerText = originalText;
+            btn.style.background = "#334155";
+        }, 2000);
     }
 
     const toBase64 = file => new Promise((resolve, reject) => {
